@@ -1,0 +1,295 @@
+COMPARISON OPERATORS :
+>Greater than :
+select * from gadgets where pprice>10000;
+SQL> select * from gadgets where pprice<10000;
+
+
+LOGICAL OPERATORS :
+AND Operator :
+SQL> select * from gadgets where pprice>5000 AND pno>2;
+
+
+
+BETWEEEN Operator :
+SQL> select * from gadgets where pprice BETWEEN 10000 AND 20000;
+UNION OPERATOR :
+SQL> select * from gadgets UNION select * from gadgets2;
+EX NO : 2
+BUILT-IN FUNCTIONS
+MAX :
+SQL> select max(pprice) from gadgets;
+MIN :
+SQL> select min(pprice) from gadgets;
+AVG :
+SQL> select avg(pprice) from gadgets;
+SUM :
+SQL> select sum(pprice) from gadgets;
+     228995
+COUNT :
+SQL> select count(pprice) from gadgets;
+            8
+
+
+EX NO:3			
+UPDATE AND ALTER
+SQL> select * from gadgets;
+UPDATE
+SQL> update gadgets SET pcompany='oppo' where pno=5;
+1 row updated.
+SQL> select * from gadgets;
+
+SQL> update gadgets SET pname='oppo s27' where pno=5;
+1 row updated.
+SQL> select * from gadgets;
+
+ALTER
+SQL>desc gadgets;
+SQL> ALTER TABLE gadgets ADD rating number(30);
+Table altered.
+SQL>desc gadgets;
+SQL>desc gadgets;
+
+EX NO : 4
+NESTED QUERIES AND JOIN EXPRESSIONS
+Select statement :
+SQL> select * from gadgets where pno IN (select pno from gadgets where pprice>30000);
+
+Update statement :
+SQL> update gadgets SET pprice=pprice*2 where pno IN (select pno from gadgets where pno=7);
+
+DELETE STATEMENT :
+SQL> delete from gadgets where pno IN (select pno from gadgets where pprice>60000);
+
+
+
+Ex no : 5 
+PL/SQL PROGRAM USING CONTROL STATEMENTS
+Program:
+
+SQL> DECLARE  
+a number(3) := 200;  
+BEGIN  
+IF( a < 10 ) THEN  
+dbms_output.put_line('a is less than 10 ' );  
+ELSE  
+dbms_output.put_line('a is not less than 10 ' );  
+END IF;  
+dbms_output.put_line('value of a is : ' || a);  
+END;
+/
+
+Output:
+a is not less than 10
+value of a is : 200
+
+PL/SQL procedure successfully completed.
+
+Ex no : 6
+PL/SQL - ELECTRICITY BILL
+
+
+create table eb(mno number(10),name varchar(25),lmr number(5),cmr number(5),unit number(5),amtnumbe(6,2));
+Insert values:-
+insert into eb values(100,'harish',350,400,0,0);
+Add fields:-
+alter table ebadd(unit number(5),amount number(5));
+Program:-
+declare
+mno1 number(3);
+names varchar2(20);
+lmr1 number(20);
+cmr1 number(20);
+unit1 number(5);
+amt1 number(5);
+a number;
+b number;
+begin
+ mno1:=&mno1;
+selectname,lmr,cmr into names,lmr1,cmr1 from eb
+wheremno=mno1;
+ unit1:=cmr1-lmr1;
+dbms_output.put_line('  units consumed  '||unit1);
+if unit1<=100 then
+ amt1:=unit1*0.50;
+end if;
+if unit1>100 and unit1<=200 then
+a:=unit1-100;
+ amt1:=100*0.50+a*1.00;
+end if;
+if unit1>200 then
+b:=unit1-200;
+ amt1:=100*0.50+100*1.00+b*1.50;
+end if;
+updateeb set unit=unit1,amount=amt1 where mno=mno1;
+dbms_output.put_line('meter number:'||mno1);
+dbms_output.put_line('name:'||names);
+dbms_output.put_line('lastmonth reading:'||lmr1);
+dbms_output.put_line('unit consumed:'||unit1);
+dbms_output.put_line('amount changed:'||amt1);
+end ;
+
+PL/SQL procedure successfully completed.
+
+
+Ex no : 7
+TRIGGER
+
+SQL> create table tri (code number(4), item varchar(10), quantity number(4));
+
+Table created
+
+Program:
+
+SQL> create or replace trigger S1 before insert on tri for each row
+begin
+if(: new.quantity<=0 or : new.quantity>=300)
+thenraise_application_error(‘_2005’,’Enter the valid quantity ranges from 1 to 300’);
+else
+dbms_output.put_line(‘inserting a record’);
+end if;
+end;
+
+Trigger created
+
+Output:
+
+SQL>  insert into tri values(&code, ‘&item’, &quantity);
+Enter value for code: 111
+Enter value for item: Ponds
+Enter value for qunantity: 350
+Error number argument to raise_application_error
+
+Ex no : 8
+PROTEIN SEQUENCE TABLE
+Program :
+
+CREATE TABLE `idmapping` (
+    `UniProtKB_AC` CHAR(6) NOT NULL,
+    `ID_type` VARCHAR(20) NOT NULL,
+    `ID` VARCHAR(64) NOT NULL,
+    PRIMARY KEY (`ID_type`, `ID`),
+    INDEX `ID_lookup` (`UniProtKB_AC`, `ID_type`, `ID`)
+)
+COLLATE='utf8mb4_general_ci';
+
+
+
+SELECT idmapping.UniProtKB_AC, sequence.Sequence
+FROM idmapping
+LEFTJOIN sequence ON idmapping.UniProtKB_AC = sequence.UniProtKB_AC
+WHERE ID_type='GI'AND ID LIKE'10607%'
+
+
+SELECT idmapping.UniProtKB_AC, sequenceDetail.AminoAcid
+FROM idmapping
+LEFTJOIN sequenceDetail ON idmapping.UniProtKB_AC = sequenceDetail.UniProtKB_AC
+WHERE ID_type='GI'AND ID LIKE'10607%'
+ORDERBY sequenceDetail.SequenceNumber DESC
+
+
+
+
+Output :
+
+MASNTVSAQGGSNRPVRDFSNIQDVAQFLLFDPIWNEQPGSIVPWKMNREQALAERYPEL
+QTSEPSEDYSGPVESLELLPLEIKLDIMQYLSWEQISWCKHPWLWTRWYKDNVVRVSAIT
+FEDFQREYAFPEKIQEIHFTDTRAEEIKAILETTPNVTRLVIRRIDDMNYNTHGDLGLDD
+LEFLTHLMVEDACGFTDFWAPSLTHLTIKNLDMHPRWFGPVMDGIKSMQSTLKYLYIFET
+YGVNKPFVQWCTDNIETFYCTNSYRYENVPRPIYVWVLFQEDEWHGYRVEDNKFHRRYMY
+STILHKRDTDWVENNPLKTPAQVEMYKFLLRISQLNRDGTGYESDSDPENEHFDDESFSS
+GEEDSSDEDDPTWAPDSDDSDWETETEEEPSVAARILEKGKLTITNLMKSLGFKPKPKKI
+QSIDRYFCSLDSNYNSEDEDFEYDSDSEDDDSDSEDDC
+
+
+Ex no : 9
+PL/SQL DNA SEQUENCE TABLE
+create table Features
+(
+ GI number not null,
+ FeatureID number not null,
+ KeyName varchar2(50) not null,
+ Location varchar2(50) not null,
+ Ordinal number not null,
+ FeaturesTbl tbl_Features_Described,
+ constraint pk_FeatureID primary key(FeatureID),
+ constraint fk_Features_GI foreign key (GI) references Locus(GI)
+)
+nested table FeaturesTbl store as Features_Described_Table;
+/*
+Drop al the sequences that could conflict within the Oracle DB.
+ The sequences will be used when generating the index.
+ It takes a unique sequence to do the auto-incrementing,
+ then a trigger will be added to auto-magically create the autonumbering
+ effect to the tables that need auto-numbering.
+ */
+drop sequence Accession_Seq;
+drop sequence Titles_Seq;
+drop sequence References_Seq;
+drop sequence Definition_Seq;
+drop sequence Taxonomic_Seq;
+drop sequence Source_Seq;
+drop sequence Sequences_Seq;
+drop sequence Features_Seq;
+drop sequence Locus_Seq;
+drop sequence LocusAccession_Seq;
+drop sequence Keywords_Seq;
+drop sequence LocusKeywords_Seq;
+/*
+ Sequences: Each one referes to a different table. Past experience
+ has shown that it is easier to do deletes when there is a unique ID
+ easily retrieved.
+ Having the start with 1 will reset any information about the index that
+Oracle may have in it's cache.
+ */
+create sequence Accession_Seq start with 1;
+create sequence Features_Seq start with 1;
+create sequence Titles_Seq start with 1;
+create sequence References_Seq start with 1;
+create sequence Definition_Seq start with 1;
+create sequence Taxonomic_Seq start with 1;
+create sequence Source_Seq start with 1;
+create sequence Sequences_Seq start with 1;
+create sequence Locus_Seq start with 1;
+create sequence LocusAccession_Seq start with 1;
+create sequence Keywords_Seq start with 1;
+create sequence LocusKeywords_Seq start with 1;
+/*
+Triggers: These have been added to create the autonumbering.
+ Each one is basically the same.
+ Create the trigger, say that it is to be done before an insert
+ and put in the column of the table the next sequence value.
+ */
+
+
+Output
+
+
+FEDFQREYAFPEKIQEIHFTDTRAEEIKAILETTPNVTRLVIRRIDDMNYNTHGDLGLDD
+LEFLTHLMVEDACGFTDFWAPSLTHLTIKNLDMHPRWFGPVMDGIKSMQSTLKYLYIFET
+YGVNKPFVQWCTDNIETFYCTNSYRYENVPRPIYVWVLFQEDEWHGYRVEDNKFHRRYMY
+
+
+
+Ex no 10 :
+STUDENT REPORT GENERATION
+
+
+SQL> create table stud (stuno number(2),stuname varchar(12),studept varchar(10),studmark number(2));
+
+Table created.
+
+SQL> insert into stud values(7,'dhoni','cs',99);
+
+1 row created.
+
+SQL> insert into stud values(8,'jaddu','pa',90);
+
+1 row created.
+
+SQL> set pagesize 15;
+SQL> set linesize 70;
+SQL> TTITLE SKIP CENTER'STUDENT REPORT';
+SQL> BTITLE SKIP CENTER'CONFIDENTIAL';
+SQL> COLUMN studept HEADING'DEPT';
+SQL> select * from stud;
+
